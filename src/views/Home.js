@@ -17,59 +17,10 @@ import DomeFloor from '../components/DomeFloor';
 export default () => {
     const [localHost, setLocalHost] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [orientationPermission, setOrientationPermission] = useState();
-
-    useEffect(() => {
-        function getOrientationPermissionFromLocalStorage() {
-            const storageOrientationPermission = localStorage.getItem(
-                '3d-dome-orientationPermission'
-            );
-            if (storageOrientationPermission) {
-                setOrientationPermission(storageOrientationPermission);
-            }
-        }
-
-        getOrientationPermissionFromLocalStorage();
-        setLoading(false);
-    }, []);
 
     useEffect(() => {
         setLocalHost(isLocalHost());
     }, []);
-
-    async function requestOrientationPermission() {
-        try {
-            if (localHost) {
-                console.error(
-                    'Device orientation permissions can not be set on localhost (not secure). Sorry!'
-                );
-            }
-
-            // Android devices don't use requestPermission()
-            if (typeof DeviceOrientation.requestPermission !== 'function') {
-                const userAgent = navigator.userAgent.toLowerCase();
-                if (userAgent.includes('android')) {
-                    console.info(
-                        'Android device detected. Permission granted by default.'
-                    );
-                    setOrientationPermission('granted');
-                    return;
-                }
-            }
-
-            const permission = await DeviceOrientationEvent.requestPermission();
-            console.info({ permission });
-            setOrientationPermission(permission);
-            localStorage.setItem('3d-dome-orientationPermission', permission);
-        } catch (error) {
-            console.error(
-                'An error occurred while setting device orientation permission. Permission denied.'
-            );
-            console.error({ error });
-            setOrientationPermission('denied');
-            localStorage.setItem('3d-dome-orientationPermission', 'denied');
-        }
-    }
 
     function isLocalHost() {
         if (location.hostname === 'localhost') {
@@ -81,37 +32,12 @@ export default () => {
         return false;
     }
 
-    if (loading) {
-        return (
-            <PermissionScreen>
-                <GlobalStyles />
-                Loading...
-            </PermissionScreen>
-        );
-    }
-
-    if (!orientationPermission) {
-        return (
-            <PermissionScreen>
-                <GlobalStyles />
-                <button onClick={requestOrientationPermission}>
-                    Enable access device orientation
-                </button>
-            </PermissionScreen>
-        );
-    }
-
     return (
         <span>
             <GlobalStyles />
             <Canvas style={{ background: 'rgb(140, 140, 255)' }}>
                 <Camera position={[0, 0, 0]} />
-                {orientationPermission !== 'denied' ? null : localHost ? (
-                    <Controls />
-                ) : (
-                    <ControlsLimited />
-                )}
-                {orientationPermission === 'granted' && <DeviceOrientation />}
+                {localHost ? <Controls /> : <ControlsLimited />}
                 <group position={[4, 0, 0]} rotation={[0, -Math.PI, 0]}>
                     <ambientLight intensity={0.85} />
                     <spotLight

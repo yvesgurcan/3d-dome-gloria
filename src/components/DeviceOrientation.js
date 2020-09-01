@@ -5,6 +5,7 @@ import { DeviceOrientationControls } from 'three/examples/jsm/controls/DeviceOri
 extend({ DeviceOrientationControls });
 
 export default () => {
+    return null;
     const controlsReference = useRef();
     const { camera } = useThree();
 
