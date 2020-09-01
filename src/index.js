@@ -62,23 +62,11 @@ ReactDOM.render(
             component={() => <Inside color="yellow" to="/inside4" />}
         />
 
-        <Route
-            path="/inside1/pin1"
-            render={() => <PinModal to="/inside1" text="1" />}
-        />
-        <Route
-            path="/inside1/pin2"
-            render={() => <PinModal to="/inside1" text="2" />}
-        />
-        <Route
-            path="/inside1/pin3"
-            render={() => <PinModal to="/inside1" text="3" />}
-        />
+        <Route path="/inside/pin1" render={() => <PinModal to="" text="1" />} />
+        <Route path="/inside/pin2" render={() => <PinModal to="" text="2" />} />
+        <Route path="/inside/pin3" render={() => <PinModal to="" text="3" />} />
 
-        <Route
-            path="/inside2/pin1"
-            render={() => <PinModal to="/inside2" text="A" />}
-        />
+        <Route path="/inside/pin4" render={() => <PinModal to="" text="4" />} />
         <Route
             path="/inside2/pin2"
             render={() => <PinModal to="/inside2" text="B" />}
